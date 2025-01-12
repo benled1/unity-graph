@@ -7,8 +7,10 @@ public class Graph : MonoBehaviour
 {
     [SerializeField]
     Transform pointPrefab;
-    [SerializeField]
+    [SerializeField, Range(10,200)]
     int resolution = 10;
+    [SerializeField, Range(0,4)]
+    int function;
     float[] domain = {-1, 1};
     float baseUnit => Math.Abs(domain[1]-domain[0])/resolution;
     float pointShift => baseUnit*0.5f;
@@ -33,29 +35,25 @@ public class Graph : MonoBehaviour
         }
     }
 
+
     void Update() 
     {
         for (int i=0;i<points.Length;i++)
         {
             Transform currPoint = points[i];
             Vector3 oldPosition = currPoint.localPosition;
-            oldPosition.y = Mathf.Sin(Mathf.PI * (currPoint.position.x + Time.time));
+            if (function == 0)
+            {
+                oldPosition.y = FunctionLibrary.Wave(currPoint.position.x, Time.time);
+            }else if (function == 1)
+            {
+                oldPosition.y = FunctionLibrary.MultiWave(currPoint.position.x, Time.time);
+            }else if (function == 2)
+            {
+                oldPosition.y = FunctionLibrary.Ripple(currPoint.position.x, Time.time);
+            }
             currPoint.localPosition = oldPosition;
+
         }
-    }
-
-    private float xPlusOne(float x)
-    {
-        return x + baseUnit;
-    }
-
-    private float xSquared(float x)
-    {
-        return x * x; 
-    }
-
-    private float xCubed(float x)
-    {
-        return x * x * x;
     }
 }
